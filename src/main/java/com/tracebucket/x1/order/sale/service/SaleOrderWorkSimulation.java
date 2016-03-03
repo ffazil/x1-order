@@ -1,8 +1,8 @@
 package com.tracebucket.x1.order.sale.service;
 
-import com.tracebucket.x1.order.base.jpa.repository.OrderRepository;
 import com.tracebucket.x1.order.sale.domain.SaleOrder;
 import com.tracebucket.x1.order.sale.domain.SaleOrderPaidEvent;
+import com.tracebucket.x1.order.sale.jpa.repository.SaleOrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +28,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SaleOrderWorkSimulation {
 
     @NonNull
-    private OrderRepository orderRepository;
+    private SaleOrderRepository saleOrderRepository;
 
     private final Set<SaleOrder> saleOrdersInProgress = Collections.newSetFromMap(new ConcurrentHashMap<SaleOrder, Boolean>());
 
     @Async
     @TransactionalEventListener
     public void prepareSalesOrder(SaleOrderPaidEvent saleOrderPaidEvent){
-        SaleOrder saleOrder = (SaleOrder) orderRepository.findById(saleOrderPaidEvent.getSaleOrderId());
+        SaleOrder saleOrder = (SaleOrder) saleOrderRepository.findById(saleOrderPaidEvent.getSaleOrderId());
         saleOrder.markInPreparation();
-        saleOrder = orderRepository.save(saleOrder);
+        saleOrder = saleOrderRepository.save(saleOrder);
 
         saleOrdersInProgress.add(saleOrder);
         log.info("Preparing order {}", saleOrder);
@@ -49,7 +49,7 @@ public class SaleOrderWorkSimulation {
         }
 
         saleOrder.markProcessed();
-        orderRepository.save(saleOrder);
+        saleOrderRepository.save(saleOrder);
 
         saleOrdersInProgress.remove(saleOrder);
         log.info("Finished preparing order {}", saleOrder);

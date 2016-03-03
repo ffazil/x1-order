@@ -1,8 +1,8 @@
 package com.tracebucket.x1.order.sale.rest;
 
 import com.tracebucket.x1.order.base.domain.BaseOrder;
-import com.tracebucket.x1.order.base.jpa.repository.OrderRepository;
 import com.tracebucket.x1.order.sale.domain.*;
+import com.tracebucket.x1.order.sale.jpa.repository.SaleOrderRepository;
 import com.tracebucket.x1.order.sale.service.PaymentService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,7 +42,7 @@ public class PaymentController {
 	private final @NonNull
 	EntityLinks entityLinks;
 	@NonNull
-	private final OrderRepository orderRepository;
+	private final SaleOrderRepository saleOrderRepository;
 
 	/**
 	 * Accepts a payment for an {@link SaleOrder}
@@ -57,7 +57,7 @@ public class PaymentController {
 	@RequestMapping(path = PaymentLinks.PAYMENT, method = PUT)
 	ResponseEntity<?> submitPayment(@PathVariable("id") String orderId, @RequestBody CreditCardNumber number) {
 
-		SaleOrder saleOrder = (SaleOrder) orderRepository.findById(orderId);
+		SaleOrder saleOrder = (SaleOrder) saleOrderRepository.findById(orderId);
 
 		if (saleOrder == null || saleOrder.isPaid()) {
 			return ResponseEntity.notFound().build();
@@ -81,7 +81,7 @@ public class PaymentController {
 	@RequestMapping(path = PaymentLinks.RECEIPT, method = GET)
 	HttpEntity<?> showReceipt(@PathVariable("id") String orderId) {
 
-		SaleOrder saleOrder = (SaleOrder) orderRepository.findById(orderId);
+		SaleOrder saleOrder = (SaleOrder) saleOrderRepository.findById(orderId);
 
 		if (saleOrder == null || !saleOrder.isPaid() || saleOrder.isTaken()) {
 			return ResponseEntity.notFound().build();
@@ -102,7 +102,7 @@ public class PaymentController {
 	@RequestMapping(path = PaymentLinks.RECEIPT, method = DELETE)
 	HttpEntity<?> takeReceipt(@PathVariable("id") String orderId) {
 
-		SaleOrder saleOrder = (SaleOrder) orderRepository.findById(orderId);
+		SaleOrder saleOrder = (SaleOrder) saleOrderRepository.findById(orderId);
 
 		if (saleOrder == null || !saleOrder.isPaid()) {
 			return ResponseEntity.notFound().build();

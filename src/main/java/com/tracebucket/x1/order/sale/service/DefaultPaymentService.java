@@ -1,10 +1,10 @@
 package com.tracebucket.x1.order.sale.service;
 
-import com.tracebucket.x1.order.base.jpa.repository.OrderRepository;
 import com.tracebucket.x1.order.sale.PaymentException;
 import com.tracebucket.x1.order.sale.domain.*;
 import com.tracebucket.x1.order.sale.jpa.repository.CreditCardRepository;
 import com.tracebucket.x1.order.sale.jpa.repository.PaymentRepository;
+import com.tracebucket.x1.order.sale.jpa.repository.SaleOrderRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class DefaultPaymentService implements PaymentService{
     @NonNull
     private final PaymentRepository paymentRepository;
     @NonNull
-    private final OrderRepository orderRepository;
+    private final SaleOrderRepository saleOrderRepository;
     @NonNull
     private final ApplicationEventPublisher publisher;
 
@@ -57,6 +57,7 @@ public class DefaultPaymentService implements PaymentService{
         saleOrder.markPaid();
         CreditCardPayment payment = paymentRepository.save(new CreditCardPayment(creditCard, saleOrder));
 
+        //TODO Move event publishing to Aggregate root. Need to implement an Abstract Aggregate Root.
         publisher.publishEvent(new SaleOrderPaidEvent(saleOrder.getId()));
 
         return payment;
@@ -71,7 +72,7 @@ public class DefaultPaymentService implements PaymentService{
     @Override
     public Optional<Payment.Receipt> takeReceiptFor(SaleOrder saleOrder) {
         saleOrder.markTaken();
-        orderRepository.save(saleOrder);
+        saleOrderRepository.save(saleOrder);
 
         return getPaymentFor(saleOrder).map(Payment::getReceipt);
     }
