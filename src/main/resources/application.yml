@@ -1,0 +1,12 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  data:
+    rest:
+      enable-enum-translation: true
+  jackson:
+    mapper:
+      infer-property-mutators: false
+    serialization:
+      fail-on-unwrapped-type-identifiers: false
