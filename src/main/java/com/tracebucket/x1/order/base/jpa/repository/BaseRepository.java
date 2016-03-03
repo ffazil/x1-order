@@ -17,7 +17,7 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, S
     T findById(String id);
 
 
-
+    //Set passive instead of deleting an Entity.
     @Override
     @Modifying(clearAutomatically = true)
     @Query("UPDATE #{#entityName} x set x.passive = true where x.id = :id")

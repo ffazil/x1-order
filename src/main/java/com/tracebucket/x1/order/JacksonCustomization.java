@@ -45,13 +45,13 @@ public class JacksonCustomization {
     }
 
     public @Bean
-    Module orderFrameworkModule(){
-        return new OrderFrameworkModule();
+    Module x1OrderModule(){
+        return new X1OrderModule();
     }
 
     @SuppressWarnings("serial")
-    static class OrderFrameworkModule extends SimpleModule{
-        public OrderFrameworkModule(){
+    static class X1OrderModule extends SimpleModule{
+        public X1OrderModule(){
             setMixInAnnotation(BaseOrder.class, BaseOrderMixin.class);
             setMixInAnnotation(BaseLineItem.class, BaseLineItemMixin.class);
 

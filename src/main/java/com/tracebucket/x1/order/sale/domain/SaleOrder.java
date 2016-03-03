@@ -36,7 +36,7 @@ public class SaleOrder extends BaseOrder{
     }
 
     //For Jpa
-    public SaleOrder(){
+    protected SaleOrder(){
         this(new BaseLineItem[0]);
     }
 
@@ -75,7 +75,7 @@ public class SaleOrder extends BaseOrder{
     }
 
     /**
-     * Marks the {@link SaleOrder} as in preparation.
+     * Marks the {@link SaleOrder} as in processing.
      */
     public void markInPreparation() {
 

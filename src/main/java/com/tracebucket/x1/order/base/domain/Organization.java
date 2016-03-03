@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 /**
  * @author ffazil
  * @since 10/02/16
+ *
+ * Wrapper class of an Organization in Order context.
+ *
  */
 @Entity
 @Getter
